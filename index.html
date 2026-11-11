@@ -57,7 +57,7 @@
       <button id="play">¡A JUGAR!</button>
     </div>
     <div id="status"></div>
-    <div style="position:absolute;right:12px;bottom:8px;font-size:11px;color:#6f8aa6">Versión 16 · 11 nov</div>
+    <div style="position:absolute;right:12px;bottom:8px;font-size:11px;color:#6f8aa6">Versión 19 · 11 nov</div>
     <div class="help">
       <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> moverse · Mouse apuntar · Clic o <kbd>Espacio</kbd> lanzar · <kbd>Tab</kbd> tabla · <kbd>M</kbd> sonido<br>
       🔑 Llave de moto = escudo &nbsp;·&nbsp; 🦺 Chaleco (¡desaparece rápido!) &nbsp;·&nbsp; 🎒 Maleta naranja = +40 vida<br>
@@ -123,11 +123,12 @@ const CHARS = {
   pacho:  { name: 'Mapis',  col: '#d08a3a', label: 'Gafas negras y perrito · lanza huesos', skin: '#f0c8a0', hair: '#7a4b26', hs: 'long', female: 1, glasses: 1, shades: 1, shirt: '#e8a33a', pants: '#3a5a8c', shoes: '#6b4a2b', item: 'dog' },
   francisco: { name: 'Francisco', col: '#e0e0e0', label: 'Traje y maletín · lanza maletines', skin: '#e8b48a', hair: '#2b1a10', hs: 'short', outfit: 'suit', shirt: '#1d1d22', pants: '#1d1d22', shoes: '#0d0d0d', item: 'briefcase' },
   dontono: { name: 'Volt', col: '#9aa3ad', label: 'Calvo con llave · lanza llaves inglesas', skin: '#e0a870', hair: '#9a9a9a', hs: 'bald', mus: 1, outfit: 'shirt', shirt: '#5b7fa6', pants: '#4a4a55', shoes: '#3a2414', item: 'wrench' },
-  nicol:  { name: 'Nicol',  col: '#25d366', label: 'Portátil · lanza mensajes de chat', skin: '#8d5524', hair: '#140d0b', hs: 'longstraight', female: 1, shirt: '#2bb3a3', pants: '#30508a', shoes: '#ffffff', item: 'laptop' },
+  nicol:  { name: 'Nicol',  col: '#7ed957', label: 'Gafas verdes y portátil · lanza mensajes de chat', skin: '#c98b5a', hair: '#140d0b', hs: 'longstraight', female: 1, glasses: 1, shades: 1, shadeCol: '#3fae4f', shirt: '#6fcf3f', pants: '#2b2b2b', shoes: '#7ed957', item: 'laptop' },
 };
 const NPC = {
   diego:  { name: 'DIEGONORREA', skin: '#f0c8a0', hair: '#7b4a22', hs: 'volume', beard: 2, eye: '#2b6cb0', outfit: 'shirt', shirt: '#f4f4f4', pants: '#2c3e66', shoes: '#4a2c17' },
   alejo:  { name: 'Alejo', skin: '#e8b48a', hair: '#2b1a10', hs: 'short', beard: 2, chubby: 1, shirt: '#3d8b3d', pants: '#4a4a55', shoes: '#222222' },
+  jordan: { name: 'JORDAN', skin: '#e8b48a', hair: '#2b1a10', hs: 'short', glasses: 1, chubby: 1, fat: 1, outfit: 'pilot', shirt: '#5d6b3a', pants: '#5d6b3a', shoes: '#2b2b2b' },
   crespa: { name: 'La Crespa', skin: '#d9a77c', hair: '#4a2c17', hs: 'curly', female: 1, shirt: '#8e44ad', pants: '#30508a', shoes: '#f2f2f2' },
 };
 const ALLC = Object.assign({}, CHARS, NPC);
@@ -173,12 +174,14 @@ function buildCharDef(d, back, frame) {
   sp(23, tx0 + 1, tx1 - 1, sh);
   for (let y = 24; y <= 41; y++) sp(y, tx0, tx1, sh);
   if (d.chubby) { for (let y = 31; y <= 40; y++) sp(y, 8, 24, sh); }
+  if (d.fat) { for (let y = 26; y <= 43; y++) { const k = 1 - ((y - 35) / 9.5) ** 2, w = Math.round(13 * Math.sqrt(Math.max(0, k))); sp(y, 16 - w, 16 + w, sh); r(16 + w - 3, y, 3, 1, shD); } }
   r(tx1 - 3, 24, 3, 18, shD); if (d.chubby) r(21, 31, 4, 10, shD);
   r(tx0, 24, 1, 17, shL);
   // detalles de la ropa
   if (!back) {
     if (d.outfit === 'flannel') { r(14, 23, 4, 19, '#2f2f2f'); for (const x of [12, 19]) r(x, 24, 1, 17, '#7d2222'); for (const y of [29, 35]) { sp(y, tx0, 13, '#7d2222'); sp(y, 18, tx1, '#7d2222'); } }
     else if (d.outfit === 'jersey') { sp(23, 13, 18, '#ffffff'); sp(24, 14, 17, '#ffffff'); px(15, 25, '#ffffff'); px(16, 25, '#ffffff'); r(tx0, 40, tx1 - tx0 + 1, 1, '#ffffff'); }
+    else if (d.outfit === 'pilot') { r(16, 23, 1, 18, '#c9c9a0'); r(10, 27, 4, 3, '#c0392b'); px(11, 28, '#ffd84a'); r(18, 27, 4, 2, '#2b6cd6'); sp(23, 13, 18, '#4a5530'); r(8, 37, 17, 2, '#3a4224'); px(16, 37, '#c9c9a0'); r(10, 32, 3, 2, '#4a5530'); r(19, 32, 3, 2, '#4a5530'); }
     else if (d.outfit === 'suit') { for (let y = 23; y <= 31; y++) sp(y, 14 - Math.floor((31 - y) / 3), 17 + Math.floor((31 - y) / 3), '#f4f4f4'); r(15, 24, 2, 10, '#111111'); px(15, 24, '#333'); r(12, 25, 2, 8, '#2c2c34'); r(18, 25, 2, 8, '#2c2c34'); for (const y of [34, 37]) px(14, y, '#cfcfcf'); }
     else if (d.outfit === 'shirt') { sp(23, 13, 18, skin); sp(24, 14, 17, skin); sp(25, 15, 16, skin); for (const y of [28, 32, 36]) px(15, y, '#c9c9c9'); r(tx0, 41, tx1 - tx0 + 1, 1, '#5a3412'); px(15, 41, '#e0b84a'); }
     else if (!d.chubby) { sp(23, 13, 18, dk(sh, .7)); sp(24, 14, 17, skin); }
@@ -213,6 +216,7 @@ function buildCharDef(d, back, frame) {
   }
   // cabeza
   for (const y in HEAD) { const [a, b] = HEAD[y]; sp(+y, a, b, skin); if (b >= 21) sp(+y, 21, b, skD); }
+  if (d.fat) { for (let y = 11; y <= 19; y++) { sp(y, 5, 6, skin); sp(y, 23, 25, skD); } sp(20, 8, 22, skD); sp(21, 10, 20, skD); }
   sp(20, 10, 18, skD);
   const hair = d.hair, hD = dk(hair, .72), hL = lt(hair, 1.35);
   if (!back) {
@@ -271,7 +275,7 @@ function buildCharDef(d, back, frame) {
   // gafas
   if (d.glasses && !back) {
     const fr = '#111111';
-    for (const ex of [8, 13]) { sp(10, ex, ex + 3, fr); sp(13, ex, ex + 3, fr); r(ex, 10, 1, 4, fr); r(ex + 3, 10, 1, 4, fr); r(ex + 1, 11, 2, 2, d.shades ? '#2b2b33' : '#bfe6ff'); if (d.shades) px(ex + 2, 11, '#6a6a78'); else px(ex + 1, 11, '#1a1a1a'); }
+    for (const ex of [8, 13]) { sp(10, ex, ex + 3, fr); sp(13, ex, ex + 3, fr); r(ex, 10, 1, 4, fr); r(ex + 3, 10, 1, 4, fr); r(ex + 1, 11, 2, 2, d.shadeCol || (d.shades ? '#2b2b33' : '#bfe6ff')); if (d.shades) px(ex + 2, 11, d.shadeCol ? '#a8f0a0' : '#6a6a78'); else px(ex + 1, 11, '#1a1a1a'); }
     px(12, 11, fr); sp(11, 17, 20, fr);
   }
   // objetos en la mano
@@ -718,7 +722,7 @@ function drawPlant(x, y) {
 // ---------- Efectos arcade ----------
 const PAUSE = { on: false, btns: [] };
 let duelFx = [], duelShake = 0, duelPrev = {}, duelLastCh = new Set();
-let lastLv = null;
+let lastLv = null, lastJd = null;
 let roul = null, floaters = [], banners = [], flash = 0, quakeShake = 0, lastStep = -1, lastQ = null, lastRoundPh = null, scootSeen = new Map();
 function floater(x, y, text, col, size = 18, life = 0.9) { floaters.push({ x: x + (Math.random() - 0.5) * 20, y, z: 50, text, col, size, life, max: life }); }
 function banner(text, col = '#ffd84a', life = 1.6, size = 54) { banners.push({ text, col, life, max: life, size }); if (banners.length > 3) banners.shift(); }
@@ -803,6 +807,9 @@ function onState(m) {
     else if (e.t === 'lava') { floater(e.x, e.y, '¡A LA LAVA!', '#ff6a00', 24, 1.3); burst(e.x, e.y, 10, '#ff6a00', 30, 200); tone(400, 0.6, 'sawtooth', 0.07, 60); }
   }
   // temblor
+  if (m.jd && m.jd.ph === 'warn' && !(lastJd && lastJd.ph === 'warn')) { banner('⚠ ¡VIENE JORDAN!', '#ff8c1a', 2, 56); tone(900, 1.2, 'sawtooth', 0.05, 200); }
+  if (m.jd && m.jd.ph !== 'warn' && lastJd && lastJd.ph === 'warn') { quakeShake = 30; boom(); burst(m.jd.x, m.jd.y, 10, '#b8a888', 50, 320); if (sound) playClip('jordan.mp3', () => say('¡Jordaaan!', 0.7, 0.9)); }
+  lastJd = m.jd;
   if (m.lv && !lastLv) { banner('🌋 ¡EL PISO ES LAVA!', '#ff6a00', 2, 56); if (sound) playClip('lava.mp3', () => say('¡El piso es lava!', 1, 1.1)); }
   lastLv = m.lv;
   if (m.q && !lastQ) { banner('⚠ ¡TEMBLOR! ⚠', '#ff8c1a', 2.2, 60); if (sound) playClip('monstruo.mp3', () => say('¡Faaaaah!', 0.5, 0.7)); }
@@ -1041,12 +1048,26 @@ function draw(t) {
     cam.y += (iy - 30 - vh / 2 - cam.y) * Math.min(1, dt * 10);
   }
   shake *= 0.85; quakeShake *= 0.9;
-  const qs = state.q && state.q.ph !== 'off' ? 3 + quakeShake : 0;
+  const qs = (state.q && state.q.ph !== 'off' ? 3 : 0) + quakeShake;
   const sh = shake + qs;
   ctx.save();
   ctx.translate(Math.round(-cam.x + (Math.random() - 0.5) * sh), Math.round(-cam.y + (Math.random() - 0.5) * sh));
   ctx.drawImage(statik.c, -statik.offX, -statik.offY);
 
+  // ¡cae Jordan!: sombra que crece, caída y cráter
+  if (state.jd) {
+    const j = state.jd;
+    if (j.ph === 'warn') {
+      const k = 1 - Math.min(1, j.t / 3000), rr = 40 + k * 70;
+      ctx.fillStyle = `rgba(0,0,0,${0.15 + k * 0.4})`; ctx.beginPath(); const [cx, cy] = iso(j.x, j.y); ctx.ellipse(cx, cy, rr * K * 1.4, rr * K * 0.7, 0, 0, 7); ctx.fill();
+      ctx.strokeStyle = Math.floor(t / 120) % 2 ? '#ff2d55' : '#ffd84a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(cx, cy, 110 * K * 1.4, 110 * K * 0.7, 0, 0, 7); ctx.stroke();
+    } else {
+      const [cx, cy] = iso(j.x, j.y);
+      ctx.fillStyle = '#1a1410'; ctx.beginPath(); ctx.ellipse(cx, cy, 100 * K * 1.4, 100 * K * 0.7, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = '#3a2a1a'; ctx.beginPath(); ctx.ellipse(cx, cy - 4, 80 * K * 1.4, 80 * K * 0.7, 0, 0, 7); ctx.fill();
+      for (let i = 0; i < 10; i++) { const a = i * 0.63, d = 95 + (i % 3) * 8; const [px_, py_] = iso(j.x + Math.cos(a) * d, j.y + Math.sin(a) * d); ctx.fillStyle = i % 2 ? '#b3becb' : '#8c96a3'; ctx.fillRect(px_ - 7, py_ - 4, 14, 8); }
+    }
+  }
   // el piso es lava
   if (state.lv && state.lv.ph !== 'off' && window.lavaCells) {
     const on = state.lv.ph === 'on', blink = Math.floor(t / 150) % 2;
@@ -1072,6 +1093,10 @@ function draw(t) {
   const list = drawables.slice();
   for (const k of state.k) list.push({ key: k[2] + k[3], draw: () => drawPickup(k, t) });
   for (const sc of state.sc) if (!sc[4]) { const L = world.lanes[sc[1]]; list.push({ key: (L.ax === 'x' ? sc[3] + L.c : L.c + sc[3]), draw: () => drawScooter(sc, t) }); }
+  if (state.jd && (state.jd.ph === 'warn' && state.jd.t < 1400 || state.jd.ph === 'land')) { const j = state.jd; list.push({ key: j.x + j.y + 1, draw: () => { const [cx, cy] = iso(j.x, j.y), falling = j.ph === 'warn', fall = falling ? (j.t / 1400) * 420 : 0, sc = 2.2, img = SPR.jordan.f[falling ? 3 : 0];
+    ctx.save(); ctx.translate(cx, cy - fall - (falling ? CH * sc / 2 : 0)); if (falling) ctx.rotate((1 - j.t / 1400) * Math.PI * 5); ctx.scale(1.3, 1);
+    ctx.drawImage(img, -AX * sc, falling ? -CH * sc / 2 : -AY * sc, CW * sc, CH * sc); ctx.restore();
+    outlined('JORDAN', cx, cy - AY * sc - fall - 6, 'bold 20px Verdana', '#ff8c1a'); } }); }
   if (state.q) { const q = state.q; list.push({ key: q.gx + q.gy, draw: () => drawGiant(q, t) }); for (const h of q.hn) list.push({ key: h[2] + h[3], draw: () => drawHunter(h, t) }); }
   for (const p of state.p) if (!p.d) { const s = shown.get(p.id); list.push({ key: s.x + s.y, draw: () => drawChar(p, s, t) }); }
   for (const b of state.b) list.push({ key: b[1] + b[2], draw: () => drawProj(b, t) });
@@ -1115,7 +1140,7 @@ function draw(t) {
   drawHUD(me, vw, vh, t);
   drawMinimap(vw, vh, {
     players: state.p.filter(p => !p.d).map(p => ({ x: p.x, y: p.y, me: p.id === myId, c: p.id === myId ? '#ffd84a' : (state.mode === 'teams' && p.tm ? TEAMC[p.tm] : '#ffffff') })),
-    marks: [...state.k.map(k => ({ x: k[2], y: k[3], c: { key: '#4fc3f7', vest: '#a8c64a', cola: '#ff3b3b', carrot: '#ff8c1a' }[k[1]] || '#ff8c1a', r: 2.5 })), ...(state.q ? [{ x: state.q.gx, y: state.q.gy, c: '#ff2d55', r: 6 }] : [])],
+    marks: [...(state.jd ? [{ x: state.jd.x, y: state.jd.y, c: '#ff2d55', r: 7 }] : []), ...state.k.map(k => ({ x: k[2], y: k[3], c: { key: '#4fc3f7', vest: '#a8c64a', cola: '#ff3b3b', carrot: '#ff8c1a' }[k[1]] || '#ff8c1a', r: 2.5 })), ...(state.q ? [{ x: state.q.gx, y: state.q.gy, c: '#ff2d55', r: 6 }] : [])],
   });
   drawOverlay(me, vw, vh, t, dt);
   drawPause(vw, vh);
@@ -1294,6 +1319,7 @@ function drawOverlay(me, vw, vh, t, dt) {
     if (state.mode === 'teams') { ctx.fillStyle = '#d63031'; ctx.fillRect(Math.round(vw / 2 - w / 2), 12, 6, 26); ctx.fillStyle = '#2b6cd6'; ctx.fillRect(Math.round(vw / 2 + w / 2) - 6, 12, 6, 26); }
     ctx.textAlign = 'center'; ctx.fillStyle = r.left < 30000 && Math.floor(t / 300) % 2 ? '#ff4d4d' : '#fff'; ctx.fillText(txt, vw / 2, 30);
   }
+  if (state.jd && state.jd.ph === 'warn') outlined('🪂 ¡CAE JORDAN! Sal de la sombra', vw / 2, 140, 'bold 22px Verdana', Math.floor(t / 150) % 2 ? '#ff2d55' : '#ffd84a');
   if (state.lv && state.lv.ph === 'warn') outlined('🌋 ¡EL PISO ES LAVA! Sal de los cuadros que parpadean', vw / 2, 112, 'bold 22px Verdana', Math.floor(t / 200) % 2 ? '#ff6a00' : '#ffd84a');
   else if (state.lv && state.lv.ph === 'on') outlined(`🌋 Lava · ${Math.ceil(state.lv.left / 1000)} s`, vw / 2, 112, 'bold 18px Verdana', '#ff8c1a');
   // temblor
@@ -2153,6 +2179,7 @@ function arenaLocal(dt, now) {
       let best = null, bd = -1;
       for (let i = 0; i < 40; i++) { const s = freeSpot(); let d = 1e9; for (const p of peersP()) if (p.presence.g !== NET.gid && !p.presence.d) d = Math.min(d, Math.hypot(p.presence.x - s.x, p.presence.y - s.y)); if (d > bd) { bd = d; best = s; } }
       if (W && W.lv) for (let k = 0; k < 30 && lavaAt(best.x, best.y, W.lv.seed); k++) best = freeSpot();
+      if (W && W.jd) for (let k = 0; k < 30 && Math.hypot(best.x - W.jd.x, best.y - W.jd.y) < 160; k++) best = freeSpot();
       Object.assign(ME, { x: best.x, y: best.y, hp: MAX_HP, sh: 0, ve: 0, dead: false, spawnAt: now, speedU: 0, disU: 0, wpn: ME.baseW, wpnU: 0, pendW: null });
     }
   } else if (!(r && r.ph === 'duel')) {
@@ -2186,6 +2213,12 @@ function arenaLocal(dt, now) {
       if (type === 'rappi' && ME.hp >= MAX_HP) continue;
       if (ME.pend[id] && now - ME.pend[id] < 600) continue;
       ME.pend[id] = now; send('pk', { g: NET.gid, id });
+    }
+    // Jordan: si me cae encima, me espicha; si me meto al cráter, me caigo
+    if (W && W.jd) {
+      const hn = hostNow(), dj = Math.hypot(ME.x - W.jd.x, ME.y - W.jd.y);
+      if (hn >= W.jd.landAt && hn < W.jd.landAt + 350 && dj < 110 && !ME.jdHit) { ME.jdHit = W.jd.landAt; hurtMe(999, now, { pierce: true, by: 'JORDAN' }); }
+      else if (hn >= W.jd.landAt + 350 && hn < W.jd.end && dj < 85 && now - ME.spawnAt > 1500) hurtMe(999, now, { pierce: true, by: 'el hueco de Jordan' });
     }
     // el piso es lava: si estoy parado en un cuadro que desapareció, me caigo
     if (W && W.lv && hostNow() >= W.lv.warnEnd && hostNow() < W.lv.end && now - ME.spawnAt > 1500 && lavaAt(ME.x, ME.y, W.lv.seed)) {
@@ -2285,7 +2318,7 @@ function onHit(m) {
   if (isHost() && d.k) {
     const v = nameOf(d.g);
     if (d.o) { const k = nameOf(d.o), vs = VERBS[d.w] || VERBS.paper; hostFeed(`${k} ${vs[Math.floor(Math.random() * vs.length)]} ${v}`); }
-    else hostFeed(d.by === 'una moto REVOO' ? `🏍️ Una moto REVOO atropelló a ${v}` : d.by === 'la lava' ? `🌋 ${v} se cayó a la lava` : d.by === 'DIEGONORREA' ? `🦶 DIEGONORREA aplastó a ${v}` : `💀 ${d.by || 'Algo'} tumbó a ${v}`);
+    else hostFeed(d.by === 'una moto REVOO' ? `🏍️ Una moto REVOO atropelló a ${v}` : d.by === 'la lava' ? `🌋 ${v} se cayó a la lava` : d.by === 'DIEGONORREA' ? `🦶 DIEGONORREA aplastó a ${v}` : d.by === 'JORDAN' ? `🪂 JORDAN le cayó encima a ${v} y lo espichó` : d.by === 'el hueco de Jordan' ? `🕳️ ${v} se cayó al hueco de Jordan` : `💀 ${d.by || 'Algo'} tumbó a ${v}`);
   }
   if (isHost() && d.dis) hostFeed(`🏍️ REVOO atropelló a ${nameOf(d.g)} y le quitó el arma. ¡A correr!`);
 }
@@ -2328,6 +2361,7 @@ function arenaSnapshot(now) {
     b: projs.map(b => [b.id, Math.round(b.x), Math.round(b.y), b.ch, Math.atan2(b.vy, b.vx)]),
     k: W && W.pk ? W.pk.map(([id, type, x, y, exp]) => [id, type, x, y, exp && exp - hn < 2000 ? 1 : 0]) : [],
     sc: W && W.sc ? W.sc.map(([id, lane, dir, go]) => { const L = world.lanes[lane], len = L.ax === 'x' ? world.W : world.H; return [id, lane, dir, Math.round((dir > 0 ? -80 : len + 80) + dir * SCOOTER_SPEED * Math.max(0, hn - go) / 1000), hn < go ? 1 : 0]; }) : [],
+    jd: W && W.jd ? { x: W.jd.x, y: W.jd.y, ph: hn < W.jd.landAt ? 'warn' : (hn < W.jd.landAt + 2500 ? 'land' : 'crater'), t: Math.max(0, W.jd.landAt - hn) } : null,
     lv: W && W.lv ? { seed: W.lv.seed, ph: hn < W.lv.warnEnd ? 'warn' : (hn < W.lv.end ? 'on' : 'off'), left: Math.max(0, W.lv.end - hn) } : null,
     q: W && W.q ? Object.assign({}, W.q, { left: Math.max(0, W.q.end - hn), ph: hn < W.q.warnEnd ? 'warn' : (hn < W.q.end ? 'on' : 'off') }) : null,
     du,
@@ -2350,8 +2384,8 @@ function hostInit(now) {
 }
 function hostFeed(t) { if (!HOST) return; HOST.f.push([Date.now(), t]); if (HOST.f.length > 5) HOST.f.shift(); }
 function hostStartRound(now, rid) {
-  HOST.lv = null;
-  HOST.r = { rid, ph: 'play', endsAt: now + ROUND_MS, tgt: teamsMode() ? 30 : 15, nextLava: now + rand(30000, 50000), nextQuake: now + rand(55000, 80000), nextScooter: now + rand(8000, 14000), nextVest: now + rand(6000, 10000) };
+  HOST.lv = null; HOST.jd = null;
+  HOST.r = { rid, ph: 'play', nextJordan: now + rand(35000, 60000), endsAt: now + ROUND_MS, tgt: teamsMode() ? 30 : 15, nextLava: now + rand(30000, 50000), nextQuake: now + rand(55000, 80000), nextScooter: now + rand(8000, 14000), nextVest: now + rand(6000, 10000) };
   HOST.sc = []; HOST.q = null; HOST.du = null;
 }
 function hostPlayers() {
@@ -2401,6 +2435,14 @@ function arenaHostTick(now, dt) {
       r.nextScooter = now + (Math.random() < .3 ? 1500 : rand(7000, 13000));
     }
     if (now >= r.nextVest) { const s = freeSpot(14); HOST.vests.push({ id: 1000 + (++HOST.gseq % 100000), type: 'vest', x: Math.round(s.x), y: Math.round(s.y), up: true, exp: now + 6000 }); r.nextVest = now + rand(18000, 28000); }
+    if (!HOST.jd && now >= (r.nextJordan || 0)) {
+      const live = ps.filter(p => !p.d), tgt = live.length ? live[Math.floor(Math.random() * live.length)] : null;
+      let x = tgt ? tgt.x + rand(-60, 60) : rand(200, 1400), y = tgt ? tgt.y + rand(-60, 60) : rand(200, 1000);
+      x = Math.max(120, Math.min(world.W - 120, x)); y = Math.max(120, Math.min(world.H - 120, y));
+      HOST.jd = { x: Math.round(x), y: Math.round(y), landAt: now + 3000, end: now + 3000 + 8000 };
+      hostFeed('🪂 ¡Viene JORDAN del cielo! Salgan de la sombra');
+    }
+    if (HOST.jd && now > HOST.jd.end) { HOST.jd = null; r.nextJordan = now + rand(50000, 90000); hostFeed('🧱 Ya arreglaron el piso'); }
     if (!HOST.lv && !HOST.q && now >= (r.nextLava || 0)) {
       HOST.lv = { seed: Math.floor(Math.random() * 1e9), warnEnd: now + 3500, end: now + 3500 + 11000 };
       hostFeed('🌋 ¡EL PISO ES LAVA! Algunos cuadros van a desaparecer... ¡muévanse!');
@@ -2473,7 +2515,7 @@ function hostPublishView(now) {
   HOSTW.view = {
     r: { rid: r.rid, ph: r.ph, endsAt: r.endsAt, nextAt: r.ph === 'countdown' ? r.startAt : r.nextAt, win: r.win, wch: r.wch, wcu: r.wcu, tgt: r.tgt },
     pk: [...HOST.pk.filter(k => k.up).map(k => [k.id, k.type, k.x, k.y]), ...HOST.vests.filter(v => v.up).map(v => [v.id, 'vest', v.x, v.y, v.exp])],
-    gr: HOST.gr, sc: HOST.sc, tm: HOST.tm || null, lv: HOST.lv,
+    gr: HOST.gr, sc: HOST.sc, tm: HOST.tm || null, lv: HOST.lv, jd: HOST.jd,
     q: HOST.q ? { gx: Math.round(HOST.q.gx), gy: HOST.q.gy, gd: HOST.q.gd, st: HOST.q.st, warnEnd: HOST.q.warnEnd, end: HOST.q.end, mk: HOST.q.mk, hn: HOST.q.hn.map(h => [h[0], h[1], Math.round(h[2]), Math.round(h[3]), +h[4].toFixed(2), h[5]]) } : null,
     du: HOST.du ? { a: HOST.du.a, b: HOST.du.b, go: HOST.du.go, ha: HOST.du.ha, hb: HOST.du.hb, fx: HOST.du.fx, ls: HOST.du.ls } : null,
     f: HOST.f,
