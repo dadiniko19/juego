@@ -370,11 +370,41 @@ const RAPPI = fromMap([
 const VESTI = fromMap([
   '.ss.....ss.', '.vvs...svv.', 'vvvvs.svvvv', 'vvvvvvvvvvv', 'vvyvvvvvyvv', 'vvyvvvvvyvv', 'vvvvvvvvvvv', 'vvvvvvvvvvv', '.vvvvvvvvv.'
 ], { v: '#56602a', s: '#3b4220', y: '#7a8a3a' }, '#ffffff');
-const SCOOT = fromMap([
-  '..........hhhh............', '.........hhhhhh...........', '.........hvvvvh...........', '..........hhhh............', '.........jjjjjj...........',
-  '........jjjjjjjj..mm......', '.......jjjjjjjj..mm.......', '....RRRRRRRRRRRRRRRRR.....', '...RRRRRRRRRRRRRRRRRRRL...', '..RRGGGGGGGGGGGGGRRRRRR...',
-  '.kkkk.ssssssss.....kkkk...', 'kkwwkk.ssssss.....kkwwkk..', 'kwwwwk...........kwwwwk...', 'kkwwkk...........kkwwkk...', '.kkkk.............kkkk....'
-], { h: '#c6ff00', v: '#1a1a1a', j: '#222222', m: '#888888', R: '#111111', G: '#c6ff00', L: '#fff7a0', s: '#666666', k: '#000000', w: '#777777' }, '#ffffff');
+// moto tipo scooter deportiva (negra con paneles plateados, como la de la foto) con su piloto
+const SCOOT = (() => {
+  const GW = 46, GH = 31, g = grid(GW, GH), oy = 6;
+  const r = (x, y, w, h, c) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const X = x + i + 1, Y = y + j + oy; if (X >= 0 && X < GW && Y >= 0 && Y < GH) g[Y][X] = c; } };
+  const K = '#17171b', k = '#0b0b0d', S = '#b9c0c8', s = '#7c858f', R = '#d62828', C = '#e3e8ee', T = '#141414', TW = '#5a5a5a';
+  const wheel = (cx, cy) => { for (let y = -5; y <= 5; y++) for (let x = -5; x <= 5; x++) { const d = Math.hypot(x, y); if (d <= 5.3) r(cx + x, cy + y, 1, 1, d > 3.3 ? T : d > 1.6 ? TW : '#2a2a2a'); } r(cx - 1, cy - 1, 2, 2, R); };
+  // escape cromado
+  r(1, 17, 11, 3, C); r(1, 17, 11, 1, '#ffffff'); r(0, 18, 2, 2, s);
+  // ruedas
+  wheel(9, 22); wheel(36, 22);
+  // cuerpo trasero (sube hacia atrás) y sillín
+  for (let y = 9; y <= 17; y++) r(3 + Math.max(0, 11 - y), y, 17 - Math.max(0, 11 - y), 1, K);
+  r(5, 7, 15, 2, k); r(6, 6, 12, 1, '#26262c');            // sillín
+  r(2, 6, 5, 1, '#3a3a3a'); r(2, 7, 2, 2, '#3a3a3a');       // parrilla
+  r(2, 10, 2, 3, '#ff3030'); r(2, 10, 1, 1, '#ff9a9a');     // stop
+  r(6, 12, 13, 4, S); r(6, 12, 13, 1, '#dfe4ea'); r(8, 15, 11, 1, s); r(9, 13, 8, 1, '#c6ff00'); // panel plateado con franja REVOO
+  r(13, 16, 6, 2, k);
+  // piso bajo para los pies
+  r(18, 16, 11, 3, K); r(18, 16, 11, 1, '#2c2c34'); r(19, 18, 9, 1, S);
+  // escudo delantero inclinado + farola
+  for (let y = 2; y <= 17; y++) { const x0 = 25 + Math.floor((17 - y) / 3), x1 = 33 - Math.floor(Math.max(0, 7 - y) / 2); r(x0, y, Math.max(1, x1 - x0), 1, K); }
+  r(27, 6, 2, 9, '#2c2c34'); r(30, 9, 3, 1, R); r(29, 12, 4, 1, R);
+  r(32, 10, 3, 3, '#fff7a0'); r(33, 10, 2, 1, '#ffffff');   // farola
+  r(31, 15, 4, 2, S);                                        // guardabarros delantero
+  r(34, 14, 2, 5, S); r(34, 14, 1, 5, '#e6eaef');            // tijera
+  // manubrio y espejos
+  r(28, 1, 2, 2, K); r(25, 0, 8, 1, '#26262c'); r(24, 0, 2, 1, '#555');
+  r(26, -3, 1, 3, '#333'); r(25, -4, 3, 2, '#111'); r(32, -3, 1, 3, '#333'); r(31, -4, 3, 2, '#111');
+  // piloto con casco REVOO
+  r(11, -5, 6, 1, '#c6ff00'); r(10, -4, 8, 4, '#c6ff00'); r(15, -3, 3, 2, '#1a1a1a'); r(11, -4, 2, 1, '#eaffaa');
+  r(11, 0, 6, 6, '#2b2b2b'); r(11, 0, 1, 6, '#3a3a3a');      // chaqueta
+  r(16, 2, 10, 2, '#2b2b2b'); r(25, 1, 2, 2, '#e0a870');     // brazo y mano en el manubrio
+  r(14, 6, 7, 3, '#30508a'); r(19, 9, 3, 6, '#30508a'); r(19, 15, 5, 1, '#111');  // pierna y zapato en el piso
+  return toCanvas(g, '#ffffff');
+})();
 const KEY = fromMap([
   '..rrr...............', '.r...r..kkkkk.......', '.r...r.kkkkkkk......', '..rrr.kkkwkkkkssssssss.', '......kkkkkkkkssssssss', '.......kkkkkkk.ss.s.ss.', '........kkkkk..........'
 ], { k: '#1c1c1c', w: '#555', s: '#d8dde3', r: '#e3263f' }, '#ffffff');
